@@ -1,17 +1,16 @@
 ﻿namespace Bookify.Web.Core.Models
 {
-    public class Category
+    [Index(nameof(Name), IsUnique = true)]
+    public class Category : BaseModel
     {
         public int Id { get; set; }
 
         [MaxLength(100)]
         public string Name { get; set; } = null!;
 
-        public bool IsDeleted { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public ICollection<BookCategory> Books { get; set; } = new List<BookCategory>();
 
-        //nullable
-        public DateTime? LastUpdatedOn { get; set; }
+
 
     }
 }

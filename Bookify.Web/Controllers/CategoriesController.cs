@@ -1,52 +1,52 @@
 ﻿
-using Bookify.Web.Core.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 namespace Bookify.Web.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
             var categories = _context.Categories.AsNoTracking().ToList();
-            return View(categories);
+            var viewModel = _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+            return View(viewModel);
         }
 
         [HttpGet]
+        [AjaxOnly]
         public IActionResult Create()
         {
-            return View("Form");
+            //return a partial view to render it in the modal
+            return PartialView("_Form");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryFormViewModel model)
         {
-           if(!ModelState.IsValid)
-                return View("Form",model);
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-            var category = new Category
-            {
-                Name = model.Name
-            };
+            var category = _mapper.Map<Category>(model);
 
             _context.Add(category);
             _context.SaveChanges();
 
-            TempData["Message"] = "Saved Successfully";
-            return RedirectToAction(nameof(Index));
+            var viewModel = _mapper.Map<CategoryViewModel>(category);
+
+            return PartialView("_CategoryRow", viewModel);
         }
 
         [HttpGet]
+        [AjaxOnly]
         public IActionResult Edit(int id)
         {
             var category = _context.Categories.Find(id);
@@ -54,32 +54,30 @@ namespace Bookify.Web.Controllers
             if (category is null)
                 return NotFound();
 
-            var viewModel = new CategoryFormViewModel {
-                Id = id,
-                Name = category.Name
-            };
-            return View("Form",viewModel);
+            var viewModel = _mapper.Map<CategoryFormViewModel>(category);
+            return PartialView("_Form", viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(CategoryFormViewModel model)
         {
-            if(!ModelState.IsValid)
-                return View("Form",model);
+            if (!ModelState.IsValid)
+                return BadRequest();
 
             var categoryToEdit = _context.Categories.Find(model.Id);
 
-            if(categoryToEdit is null)
+            if (categoryToEdit is null)
                 return NotFound();
 
-            categoryToEdit.Name = model.Name;
+            categoryToEdit = _mapper.Map(model, categoryToEdit);
             categoryToEdit.LastUpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
 
-            TempData["Message"] = "Saved Successfully";
-            return RedirectToAction(nameof(Index));
+            var viewModel = _mapper.Map<CategoryViewModel>(categoryToEdit);
+
+            return PartialView("_CategoryRow", viewModel);
         }
 
         [HttpPost]
@@ -87,7 +85,7 @@ namespace Bookify.Web.Controllers
         public IActionResult ToggleStatus(int id)
         {
             var category = _context.Categories.Find(id);
-            if(category is null)
+            if (category is null)
                 return NotFound();
 
             category.IsDeleted = !category.IsDeleted;
@@ -95,6 +93,13 @@ namespace Bookify.Web.Controllers
             _context.SaveChanges();
 
             return Ok(category.LastUpdatedOn.ToString());
+        }
+
+        public IActionResult AllowItem(CategoryFormViewModel model)
+        {
+            var Exist = _context.Categories.Any(c => c.Name == model.Name);
+            return Json(!Exist);
+
         }
 
     }
