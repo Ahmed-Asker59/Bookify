@@ -147,15 +147,38 @@ var KTDatatables = function () {
 }();
 
 $(document).ready(function () {
- KTUtil.onDOMContentLoaded(function () {
-            KTDatatables.init();
-        });
+
+    if ($('.js-tinymce').length > 0) {
+        var options = { selector: ".js-tinymce", height: "422" };
+
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+        tinymce.init(options);
+    }
+
+    $('.js-select2').select2();
+    //datepicker
+    $('.js-datepicker').daterangepicker({
+        singleDatePicker: true,
+        autoApply: true,
+        drops: 'up',
+       maxDate: new Date()
+    });
 
     //show seet alert
     var message = $('#Message').text();
     if (message !== "") {
         showSuccessMessage();
     }
+
+    //datatables
+ KTUtil.onDOMContentLoaded(function () {
+            KTDatatables.init();
+        });
+
+   
 
     //Handle Bootstrap model
     $('body').delegate('.js-render-modal', 'click', function () {

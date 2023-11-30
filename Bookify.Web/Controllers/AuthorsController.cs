@@ -96,8 +96,9 @@
 
         public IActionResult AllowItem(AuthorFormViewModel model)
         {
-            var Exist = _context.Authors.Any(c => c.Name == model.Name);
-            return Json(!Exist);
+            var author = _context.Authors.SingleOrDefault(a => a.Name == model.Name);
+            var isAllowed = author is null || author.Id.Equals(model.Id);
+            return Json(isAllowed);
 
         }
     }
