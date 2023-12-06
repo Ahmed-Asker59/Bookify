@@ -26,8 +26,12 @@ function showErrorMessage(message = "Something Went Wrong!") {
     });
 }
 
+function disableSubmitButton() {
+    $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+}
+//when edit or add request is fired
 function onModalBegin() {
-    $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator','on');
+    disableSubmitButton();
 }
 
 //handle editing or adding a category
@@ -147,9 +151,23 @@ var KTDatatables = function () {
 }();
 
 $(document).ready(function () {
+    $('form').on('submit', function () {
+        if ($('.js-tinymce').length > 0) {
+            $('.js-tinymce').each(function () {
+                var input = $(this);
+                var content = tinyMCE.get(input.attr('id')).getContent();
+                input.val(content);
+            });
 
+            }
+            
+    
+        var isValid = $(this).valid();
+        if (isValid) disableSubmitButton();
+
+    });
     if ($('.js-tinymce').length > 0) {
-        var options = { selector: ".js-tinymce", height: "422" };
+        var options = { selector: ".js-tinymce", height: "430" };
 
         if (KTThemeMode.getMode() === "dark") {
             options["skin"] = "oxide-dark";
@@ -158,7 +176,15 @@ $(document).ready(function () {
         tinymce.init(options);
     }
 
+    //handle select2
     $('.js-select2').select2();
+    //fire live validtion of the select item
+    $('.js-select2').on('select2:select', function (e) {
+        var selectList = $(this);
+        $('form').validate().element('#' + selectList.attr('id'));
+    });
+
+    //end select2
     //datepicker
     $('.js-datepicker').daterangepicker({
         singleDatePicker: true,

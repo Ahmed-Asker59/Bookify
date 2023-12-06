@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Bookify.Web.Data.Migrations
 {
-    public partial class AddBooksAndBookCategories : Migration
+    public partial class AddBooksAndBookCategoriesTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,7 +19,8 @@ namespace Bookify.Web.Data.Migrations
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     Publisher = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PublishingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageThumbnailPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Hall = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsAvailableForRental = table.Column<bool>(type: "bit", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),

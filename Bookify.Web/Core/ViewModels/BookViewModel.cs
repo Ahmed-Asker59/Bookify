@@ -1,28 +1,24 @@
-﻿namespace Bookify.Web.Core.Models
+﻿namespace Bookify.Web.Core.ViewModels
 {
-    [Index(nameof(Title),nameof(AuthorId), IsUnique = true)]
-    public class Book:BaseModel
+    public class BookViewModel
     {
         public int Id { get; set; }
 
-        [MaxLength(500)]
         public string Title { get; set; } = null!;
-        public int AuthorId { get; set; }
-        public Author? Author { get; set; }
-
-        [MaxLength(200)]
+        public string Author { get; set; } = null!;
         public string Publisher { get; set; } = null!;
         public DateTime PublishingDate { get; set; }
         public string? ImagePath { get; set; }
         public string? ImageThumbnailPath { get; set; }
 
-        [MaxLength(50)]
+        
         public string Hall { get; set; } = null!;
         public bool IsAvailableForRental { get; set; }
 
         public string Description { get; set; } = null!;
 
-        public ICollection<BookCategory> Categories { get; set; } = new List<BookCategory>();
-
+        public IEnumerable<string> Categories { get; set; } = null!;
+        public bool IsDeleted { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

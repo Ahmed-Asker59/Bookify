@@ -72,7 +72,10 @@ namespace Bookify.Web.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ImageUrl")
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageThumbnailPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAvailableForRental")
