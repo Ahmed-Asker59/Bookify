@@ -69,8 +69,11 @@ var KTDatatables = function () {
     var initDatatable = function () {
         // Init datatable --- more info on datatables: https://datatables.net/manual/
         datatable = $(table).DataTable({
-            "info": false,
+            'info': false,
             'pageLength': 10,
+            'drawCallback': function () {
+                KTMenu.createInstances();
+            }
         });
     }
 
@@ -206,7 +209,7 @@ $(document).ready(function () {
 
    
 
-    //Handle Bootstrap model
+    //Handle Bootstrap model while editing or adding
     $('body').delegate('.js-render-modal', 'click', function () {
         var anchorTag = $(this);
         var modal = $('#Modal');

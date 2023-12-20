@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp.Processing;
+using System.Linq.Dynamic.Core;
 using System.Security.Principal;
 
 namespace Bookify.Web.Controllers
@@ -28,9 +29,41 @@ namespace Bookify.Web.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            //data sent from datatables
+            var skip = int.Parse(Request.Form["start"]);
+            var pageSize = int.Parse(Request.Form["length"]);
+            var searchValue = Request.Form["search[value]"];
+
+            //column selected by user to order
+
+            var columnIndex = Request.Form["order[0][column]"];
+            var columnName = Request.Form[$"columns[{columnIndex}][name]"];
+            var sortDirection = Request.Form["order[0][dir]"];
+
+            IQueryable<Book> books = _context.Books.Include(b => b.Author)
+                .Include(b => b.Categories)
+                .ThenInclude(bc => bc.Category);
+
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                books = books.Where(b => b.Title.Contains(searchValue) || b.Author!.Name.Contains(searchValue) );
+            }
+            books = books.OrderBy($"{columnName} {sortDirection}");
+            var data = books.Skip(skip).Take(pageSize).ToList();
+            var mappedData = _mapper.Map<IEnumerable<BookViewModel>>(data);
+            var recordsTotal = books.Count();
+            var jsonData = new { recordsFiltered = recordsTotal, recordsTotal, data = mappedData };
+            return Ok(jsonData);
+        }
+
         public IActionResult Details(int id)
         {
             var book = _context.Books.Include(b => b.Author)
+                .Include(b => b.Copies)
                 .Include(b => b.Categories)
                 .ThenInclude(bc => bc.Category)
                 .SingleOrDefault(b => b.Id == id);
@@ -215,6 +248,20 @@ namespace Bookify.Web.Controllers
             return RedirectToAction(nameof(Details), new {id = book.Id});
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+            var book = _context.Books.Find(id);
+            if (book is null)
+                return NotFound();
+
+            book.IsDeleted = !book.IsDeleted;
+            book.LastUpdatedOn = DateTime.Now;
+            _context.SaveChanges();
+
+            return Ok();
+        }
         public IActionResult AllowItem(BookFormViewModel model)
         {
             var book = _context.Books.SingleOrDefault(b => b.Title == model.Title && b.AuthorId == model.AuthorId);
