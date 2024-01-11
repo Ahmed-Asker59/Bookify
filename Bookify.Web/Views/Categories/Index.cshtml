@@ -63,11 +63,11 @@
 
     </div>
 
-    <input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
-    @section Plugins{
+<input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
+ @section Plugins{
         <script src="~/assets/plugins/datatables/datatables.bundle.js"></script>
-    }
-    @section Scripts{
-        <partial name="_ValidationScriptsPartial" />
+}
+@section Scripts{
+<partial name="_ValidationScriptsPartial" />
        
-    }
+}

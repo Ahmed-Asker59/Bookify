@@ -1,5 +1,5 @@
-﻿var updatedRow;
-// Shared variables
+﻿// Shared variables
+var updatedRow;
 var table;
 var datatable;
 var exportedCols = [];
@@ -19,7 +19,7 @@ function showErrorMessage(message = "Something Went Wrong!") {
     Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "message",
+        text: message !== undefined ? message.responseText : message,
         customClass: {
             confirmButton: "btn btn-primary"
         }
@@ -53,6 +53,16 @@ function onModalSuccess(row) {
 
 function onModalComplete() {
     $('body :submit').removeAttr('disabled').removeAttr('data-kt-indicator');
+}
+
+//handle select2
+function applySelect2() {
+    $('.js-select2').select2();
+    //fire live validtion of the select item
+    $('.js-select2').on('select2:select', function (e) {
+        var selectList = $(this);
+        $('form').not('#SignOut').validate().element('#' + selectList.attr('id'));
+    });
 }
 //DataTables Exporting
 var headers = $('th');
@@ -154,7 +164,7 @@ var KTDatatables = function () {
 }();
 
 $(document).ready(function () {
-    $('form').on('submit', function () {
+    $('form').not('#SignOut').on('submit', function () {
         if ($('.js-tinymce').length > 0) {
             $('.js-tinymce').each(function () {
                 var input = $(this);
@@ -162,9 +172,7 @@ $(document).ready(function () {
                 input.val(content);
             });
 
-            }
-            
-    
+        }
         var isValid = $(this).valid();
         if (isValid) disableSubmitButton();
 
@@ -179,21 +187,14 @@ $(document).ready(function () {
         tinymce.init(options);
     }
 
-    //handle select2
-    $('.js-select2').select2();
-    //fire live validtion of the select item
-    $('.js-select2').on('select2:select', function (e) {
-        var selectList = $(this);
-        $('form').validate().element('#' + selectList.attr('id'));
-    });
+    applySelect2();
 
-    //end select2
     //datepicker
     $('.js-datepicker').daterangepicker({
         singleDatePicker: true,
         autoApply: true,
         drops: 'up',
-       maxDate: new Date()
+        maxDate: new Date()
     });
 
     //show seet alert
@@ -203,11 +204,11 @@ $(document).ready(function () {
     }
 
     //datatables
- KTUtil.onDOMContentLoaded(function () {
-            KTDatatables.init();
-        });
+    KTUtil.onDOMContentLoaded(function () {
+        KTDatatables.init();
+    });
 
-   
+
 
     //Handle Bootstrap model while editing or adding
     $('body').delegate('.js-render-modal', 'click', function () {
@@ -226,6 +227,7 @@ $(document).ready(function () {
                 //render form inside the modal
                 modal.find('.modal-body').html(form);
                 $.validator.unobtrusive.parse(modal);
+                applySelect2();
             },
             error: function () {
                 showErrorMessage();
@@ -289,5 +291,55 @@ $(document).ready(function () {
         });
 
 
+
     });
+
+
+    //Handle unlock user
+    $('body').delegate('.js-unlock-user', 'click', function () {
+        //select the button [anchor tag]
+        var btn = $(this);
+        //show confirmation box of bootbox library
+        bootbox.confirm({
+            message: btn.data('message'),
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-secondary'
+                }
+            },
+            callback: function (result) {
+                //fire the post request to toggle status
+                if (result) {
+                    $.post({
+                        url: btn.data('url'),
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (LastUpdatedOn) {
+                            showSuccessMessage("Unlocked Successfully!");
+
+                        },
+                        error: function () {
+                            showErrorMessage();
+                        }
+
+                    });
+                }
+            }
+        });
+
+
+    });
+    //handle sign out
+    $('.js-sign-out').on("click", function () {
+        //select the form
+        $('#SignOut').submit();
+    })
+
+
 });

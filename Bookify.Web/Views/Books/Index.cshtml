@@ -26,8 +26,6 @@
         </a>
     </div>
 </div>
-
-
 <div class="card shadow-sm">
     <div class="card-header align-items-center py-5 gap-2 gap-md-5">
         <div class="card-title">
@@ -39,10 +37,8 @@
                     </svg>
                 </span>
                 <input type="text" data-kt-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search by Title or Author..." />
-            </div>
-            
-        </div>
-        
+            </div>  
+        </div>  
      </div>
     <div class="card-body pt-0">
         <div class="table-responsive">
@@ -52,9 +48,8 @@
                         <th class="d-none"></th>
                         <th>Book</th>
                         <th>Publisher</th>
-                        <th>Publishing Date</th>
-                        <th>Hall</th>
-                        @* <th>Categories</th> *@
+                        <th width="150px">Publishing Date</th>
+                        <th width="100px">Hall</th>
                         <th>Rental</th>
                         <th>Status</th>
                         <th class="text-end">Action</th>
@@ -66,15 +61,13 @@
             </table>
         </div>
     </div>
-
-
 </div>
 <input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
 @section Plugins{
     <script src="~/assets/plugins/datatables/datatables.bundle.js"></script>
-    }
+}
 
 @* installing datatablesdatatablesdatatablesdatatables on server side *@
 @section Scripts{
-    <script src="~/js/books.js" asp-append-version="true"></script>
+<script src="~/js/books.js" asp-append-version="true"></script>
 }

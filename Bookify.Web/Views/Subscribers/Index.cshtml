@@ -1,0 +1,44 @@
+﻿@model SearchFormViewModel
+@{
+    ViewData["title"] = "Subscribers";
+}
+<form asp-action="Search"
+      data-ajax-method="post"
+      data-ajax="true"
+      data-ajax-update ="#Result"
+      data-ajax-begin="disableSubmitButton"
+      data-ajax-failure="showErrorMessage"
+      data-ajax-complete="onModalComplete">
+    <!--begin::Card-->
+    <div class="card mb-7">
+        <div class="card-header">
+            <h3 class="card-title">Find a subscriber</h3>
+        </div>
+        <!--begin::Card body-->
+        <div class="card-body">
+            <!--begin::Compact form-->
+            <div class="d-flex align-items-center">
+                <!--begin::Input group-->
+                <div class="position-relative w-md-400px me-md-2">
+                    <i class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle ms-6"><span class="path1"></span><span class="path2"></span></i>
+                    <input type="text" class="form-control form-control-solid ps-10"   placeholder="Search by mobile number, national Id or email" asp-for="Value">
+                </div>
+                <!--end::Input group-->
+                <!--begin:Action-->
+                <div class="d-flex align-items-center">               
+                    <button type="submit" class="btn btn-primary me-5">Search</button> 
+                </div>
+                <!--end:Action-->
+            </div>
+            <!--end::Compact form-->
+        </div>
+        <!--end::Card body--> 
+    </div>
+    <!--end::Card-->
+</form>
+<div id="Result">
+
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+}

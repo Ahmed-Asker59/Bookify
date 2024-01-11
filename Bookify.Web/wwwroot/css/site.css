@@ -24,3 +24,8 @@ body {
 .h-70px{
     height: 70px;
 }
+
+#Books_processing{
+    float: right;
+    width: 650px;
+}
