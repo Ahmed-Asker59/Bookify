@@ -6,6 +6,7 @@ using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 using Bookify.Web.Helpers;
 using Bookify.Web.Settings;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     // User settings.
     options.User.RequireUniqueEmail = true;
 });
+
+builder.Services.AddDataProtection().SetApplicationName(nameof(Bookify));
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 builder.Services.AddTransient<IImageService, ImageService>();
