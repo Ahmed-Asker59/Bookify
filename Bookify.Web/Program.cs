@@ -7,6 +7,7 @@ using Bookify.Web.Helpers;
 using Bookify.Web.Settings;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.DataProtection;
+using WhatsAppCloudApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
 builder.Services.Configure<SecurityStampValidatorOptions>(options => 
 options.ValidationInterval = TimeSpan.Zero);
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.AddWhatsAppApiClient(builder.Configuration);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));

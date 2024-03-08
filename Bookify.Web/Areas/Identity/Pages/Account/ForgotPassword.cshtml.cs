@@ -73,11 +73,16 @@ namespace Bookify.Web.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                var body = _emailBodyBuilder.GenerateEmailBody("https://res.cloudinary.com/askerhub/image/upload/v1704823333/reset_password_gp0irt.png",
-                    $"hey {user.FullName}...",
-                    "Please click the button bellow to reset password",
-                    HtmlEncoder.Default.Encode(callbackUrl!),
-                    "Activate Account");
+                var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/askerhub/image/upload/v1704823333/reset_password_gp0irt.png" },
+                    {"header", $"hey {user.FullName}..." },
+                    {"body", "Please click the button bellow to reset password" },
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}" } ,
+                    {"linkTitle", "Activate Account" }
+
+                };
+                var body = _emailBodyBuilder.GenerateEmailBody( EmailTemplates.Email,  placeholders);
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,

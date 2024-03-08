@@ -127,13 +127,18 @@ namespace Bookify.Web.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
-                var body = _emailBodyBuilder.GenerateEmailBody(
-				  "https://res.cloudinary.com/askerhub/image/upload/v1704818810/icon-positive-vote-1_jwmgvw.png",
-                          $"Hey {user.FullName},",
-                          "please confirm your email",
-                          $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                          "Confirm Email"
-                  );
+
+
+                var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/askerhub/image/upload/v1704818810/icon-positive-vote-1_jwmgvw.png" },
+                    {"header", $"Hey {user.FullName}," },
+                    {"body", "please confirm your email" },
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}" } ,
+                    {"linkTitle", "Confirm Email" }
+
+                };
+                var body = _emailBodyBuilder.GenerateEmailBody(EmailTemplates.Email, placeholders);
 
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
@@ -171,12 +176,21 @@ namespace Bookify.Web.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
+
+            var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/askerhub/image/upload/v1704818810/icon-positive-vote-1_jwmgvw.png" },
+                    {"header", $"Hey {user.FullName}," },
+                    {"body", "please confirm your email" },
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl)}" } ,
+                    {"linkTitle", "Confirm Email" }
+
+                };
+            var body = _emailBodyBuilder.GenerateEmailBody(EmailTemplates.Email, placeholders);
             await _emailSender.SendEmailAsync(
                 email,
                 "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-            StatusMessage = "Verification email sent. Please check your email.";
+                body);
             return RedirectToPage();
         }
     }
