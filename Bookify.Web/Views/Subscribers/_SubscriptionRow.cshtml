@@ -1,0 +1,29 @@
+﻿@model SubscriptionViewModel
+<tr>
+	<td>
+		<div class="d-flex align-items-center ps-3">
+			@Model.StartDate.ToString("d MMM, yyyy")
+		</div>
+	</td>
+
+	<td>
+		@Model.EndDate.ToString("d MMM, yyyy")
+	</td>
+	<td>
+		@if (Model.Status == SubscriptionStatus.Active)
+		{
+			<span class="badge badge-light-success fs-7 fw-bold">@Model.Status</span>
+		}
+		else if (Model.Status == SubscriptionStatus.Expired)
+		{
+			<span class="badge badge-light-danger fs-7 fw-bold">@Model.Status</span>
+		}
+		else
+		{
+			<span class="badge badge-light-warning fs-7 fw-bold">@Model.Status</span>
+		}
+	</td>
+	<td class="text-end pe-4">
+		@Model.CreatedOn
+	</td>
+</tr>

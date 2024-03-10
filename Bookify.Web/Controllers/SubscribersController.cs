@@ -1,4 +1,5 @@
 ﻿using Bookify.Web.Data.Migrations;
+using Humanizer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -73,6 +74,17 @@ namespace Bookify.Web.Controllers
             subscriber.ImageThumbnailPath = $"/Images/Subscribers/thumb/{imgName}";
             subscriber.CreatedById = GetUserId();
 
+            //add subscription to the subsriber
+
+            Subscription subscription = new()
+            {
+                CreatedById = subscriber.CreatedById,
+                CreatedOn = subscriber.CreatedOn,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1)
+            };
+
+            subscriber.Subscriptions.Add(subscription);
             _context.Subscribers.Add(subscriber);
             _context.SaveChanges();
 
@@ -208,6 +220,7 @@ namespace Bookify.Web.Controllers
             var subscriber = _context.Subscribers
                 .Include(s => s.Governorate)
                 .Include(s => s.Area)
+                .Include(s => s.Subscriptions)
                 .SingleOrDefault(s => s.Id == subscriberId);
 
             if (subscriber is null)
@@ -220,8 +233,87 @@ namespace Bookify.Web.Controllers
                 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RenewSubscription(string skey)
+        {
+            //decrept id
+            var subscriberId = int.Parse(_dataProtector.Unprotect(skey)); 
 
-        [AjaxOnly]
+            var subscriber = _context.Subscribers
+                .Include(s => s.Subscriptions)
+                .SingleOrDefault(s => s.Id == subscriberId);
+
+            if(subscriber is null)
+                return NotFound();
+
+            if(subscriber.IsBlackListed)
+                return BadRequest();
+
+            Subscription lastSubscription = subscriber.Subscriptions.Last();
+            var startDate = lastSubscription.EndDate < DateTime.Today ? DateTime.Today: lastSubscription.EndDate.AddDays(1);
+
+			Subscription newSubscription = new()
+            {
+                CreatedById = GetUserId(),
+                CreatedOn = DateTime.Now,
+                StartDate = startDate,
+                EndDate = startDate.AddYears(1)
+            };
+
+            
+            subscriber.Subscriptions.Add(newSubscription);
+            _context.SaveChanges();
+            //send email and whatsapp message of renewal date
+            var placeholders = new Dictionary<string, string>()
+            {
+			    {"imageUrl", "https://res.cloudinary.com/askerhub/image/upload/v1704823333/reset_password_gp0irt.png" },
+			    {"header", $"Hello {subscriber.FirstName}," },
+			    {"body", $"Your subscription has been successfully renewed" },
+                {"body2" , $"Renewal Date: [{newSubscription.EndDate.ToString("d MMM yyyy")} 🎉🎉]"}
+			};
+
+            var body = _emailBodyBuilder.GenerateEmailBody(EmailTemplates.RenewSubscription, placeholders);
+
+            await _emailSender.SendEmailAsync(
+                subscriber.Email,
+               "Bookify Subscription Renewal",
+                body
+                );
+
+            if (subscriber.HasWhatsApp)
+            {
+                var components = new List<WhatsAppComponent>()
+                {
+                   new WhatsAppComponent()
+                   {
+                       Type= "body",
+                       Parameters = new List<object>()
+                       {
+                           new WhatsAppTextParameter {Text = subscriber.FirstName},
+                           new WhatsAppTextParameter {Text = newSubscription.EndDate.ToString("d MMM yyyy")}
+                       }
+                   }
+                };
+				var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01027488227" : subscriber.MobileNumber;
+
+				await _whatsAppClient.SendMessage(
+					$"2{mobileNumber}",
+					WhatsAppLanguageCode.English_US,
+					WhatsAppTemplates.SubscriptionRenew,
+					components
+					);
+			}
+
+            
+
+			var viewModel = _mapper.Map<SubscriptionViewModel>(newSubscription); 
+
+            return PartialView("_SubscriptionRow",viewModel);
+        }
+
+
+		[AjaxOnly]
 		public IActionResult GetAreas(int governorateId)
 		{
 			var areas = _context.Areas.Where(a => a.GovernorateId == governorateId && !a.IsDeleted)

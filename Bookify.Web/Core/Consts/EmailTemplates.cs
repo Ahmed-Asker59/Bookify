@@ -4,5 +4,6 @@
     {
         public static string Email = "email"; 
         public static string Notification = "notification"; 
+        public static string RenewSubscription = "RenewSubscription"; 
     }
 }
