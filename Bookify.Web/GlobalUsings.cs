@@ -10,5 +10,7 @@ global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Authorization;
 global using System.Security.Claims;
+global using WhatsAppCloudApi;
+global using WhatsAppCloudApi.Services;
 
 
