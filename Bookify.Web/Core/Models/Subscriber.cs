@@ -45,6 +45,7 @@ namespace Bookify.Web.Core.Models
         public bool IsBlackListed { get; set; }
 
         public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+        public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 
     }
 }

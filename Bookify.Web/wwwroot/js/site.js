@@ -19,19 +19,19 @@ function showErrorMessage(message = "Something Went Wrong!") {
     Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: message !== undefined ? message.responseText : message,
+        text: message.responseText !== undefined ? message.responseText : message,
         customClass: {
             confirmButton: "btn btn-primary"
         }
     });
 }
 
-function disableSubmitButton() {
-    $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+function disableSubmitButton(btn) {
+    $(btn).attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
 }
 //when edit or add request is fired
 function onModalBegin() {
-    disableSubmitButton();
+    disableSubmitButton($('#Modal').find(':submit'));
 }
 
 //handle editing or adding a category
@@ -174,7 +174,7 @@ $(document).ready(function () {
 
         }
         var isValid = $(this).valid();
-        if (isValid) disableSubmitButton();
+        if (isValid) disableSubmitButton($(this).find(':submit'));
 
     });
     if ($('.js-tinymce').length > 0) {

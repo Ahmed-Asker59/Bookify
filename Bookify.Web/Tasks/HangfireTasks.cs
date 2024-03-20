@@ -26,7 +26,7 @@ namespace Bookify.Web.Tasks
 		{
 			var subscribers = _context.Subscribers.
 				Include(s => s.Subscriptions).
-				Where(s => s.Subscriptions.OrderByDescending(s => s.EndDate).First().EndDate == DateTime.Today.AddDays(5)).
+				Where(s => !s.IsBlackListed && s.Subscriptions.OrderByDescending(s => s.EndDate).First().EndDate == DateTime.Today.AddDays(5)).
 					ToList();
 
 

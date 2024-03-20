@@ -16,6 +16,8 @@ namespace Bookify.Web.Data
         public DbSet<BookCopy> BookCopies { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Governorate> Governorates { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
+        public DbSet<RentalCopy> RentalCopies { get; set; }
         public DbSet<Subscriber> Subscribers { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         
@@ -28,6 +30,9 @@ namespace Bookify.Web.Data
                 .HasDefaultValueSql("NEXT VALUE FOR shared.SerialNumber");
             builder.Entity<BookCategory>().HasKey(e => new { e.BookId, e.CategoryId });
             base.OnModelCreating(builder);
+
+            builder.Entity<RentalCopy>()
+                .HasKey(r => new { r.RentalId, r.BookCopyId });
 
             //get all cascade fk's and turn them to restrict
             var cascade_fk = builder.Model.GetEntityTypes()

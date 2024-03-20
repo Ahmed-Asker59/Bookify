@@ -23,8 +23,14 @@ $(document).ready(function () {
                         },
                         success: function (row) {
                             $('#SubscriptionsTable').find('tbody').append(row);
+                            var activeIcon = $('#ActiveStatusIcon');
+                            activeIcon.removeClass('d-none'); 
+                            activeIcon.siblings('svg').remove();
+                            activeIcon.parents('.card').removeClass('bg-warning').addClass('bg-success');
+                            $('#RentalButton').removeClass('d-none');
+                            $('#CardStatus').text('Active Subscriber');
+                            $('#StatusBadge').removeClass('badge-light-warning').addClass('badge-light-success').text('Active Subscriber');
                             showSuccessMessage();
-
                         },
                         error: function () {
                             showErrorMessage();

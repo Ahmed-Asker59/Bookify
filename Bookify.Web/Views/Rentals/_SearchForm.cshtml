@@ -1,0 +1,32 @@
+﻿@model SearchFormViewModel
+<form asp-action="GetCopyDetails"
+      data-ajax-method="post"
+      data-ajax="true"
+      data-ajax-success="onAddCopySuccess"
+      data-ajax-begin="disableSubmitButton"
+      data-ajax-failure="showErrorMessage"
+      data-ajax-complete="onModalComplete"
+      id="SearchForm">
+    <!--begin::Compact form-->
+    <div class="d-flex align-items-center">
+        <!--begin::Input group-->
+        <div class="position-relative w-md-400px me-md-2">
+            <i class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle ms-6"><span class="path1"></span><span class="path2"></span></i>
+            <input type="text" class="form-control form-control-solid ps-10" placeholder="Search by serial number" asp-for="Value">
+        </div>
+        <!--end::Input group-->
+        <!--begin:Action-->
+        <div class="d-flex align-items-center">
+            <button type="submit" class="btn btn-primary js-search">
+                <span class="indicator-label">
+                    Search
+                </span>
+                <span class="indicator-progress">
+                    Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+        <!--end:Action-->
+    </div>
+    <!--end::Compact form-->
+</form>

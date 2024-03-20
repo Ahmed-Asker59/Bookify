@@ -18,6 +18,12 @@
 		public const string DenySpecialCharacters = "Special characters are not allowed.";
 		public const string InvalidMobileNumber = "Invalid Mobile Number!";
         public const string InvalidNationalId = "Invalid National Id!";
+        public const string InvalidSerialNumber = "Invalid serial number!";
+        public const string NotAvailableRental = "This book/copy is not available for rental!";
         public const string EmptyImage = "Image is Required!";
+        public const string BlackListedSubscriber = "This subscriber is blacklisted.";
+        public const string InactiveSubscriber = "This subscriber is inactive.";
+        public const string MaxCopiesReached = "This subscriber has reached max number of copies for rentals.";
+        public const string CopyInRental = "This copy is already rented.";
     }
 }
