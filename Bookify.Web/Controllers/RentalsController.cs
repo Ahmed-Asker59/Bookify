@@ -136,8 +136,26 @@ namespace Bookify.Web.Controllers
             return PartialView("_CopyDetails", viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MarkAsDeleted(int id)
+        {
+            var rental = _context.Rentals.Find(id);
 
-        private (string errorMessage, int? maxAllowedCopies) ValidateSubscriber(Subscriber subscriber)
+            if(rental is null || rental.CreatedOn != DateTime.Today) return NotFound();
+
+            rental.IsDeleted = true;
+            rental.LastUpdatedOn = DateTime.Today;
+            rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            _context.SaveChanges();
+
+            var copiesCount = _context.RentalCopies.Count(r => r.RentalId == id);
+
+            return Ok(copiesCount);
+        }
+
+		private (string errorMessage, int? maxAllowedCopies) ValidateSubscriber(Subscriber subscriber)
         {
             if (subscriber.IsBlackListed)
                 return (errorMessage: Errors.BlackListedSubscriber, maxAllowedCopies: null);

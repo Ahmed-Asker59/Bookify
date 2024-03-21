@@ -33,6 +33,8 @@ namespace Bookify.Web.Data
 
             builder.Entity<RentalCopy>()
                 .HasKey(r => new { r.RentalId, r.BookCopyId });
+            builder.Entity<Rental>().HasQueryFilter(r => !r.IsDeleted);
+            builder.Entity<RentalCopy>().HasQueryFilter(rc => !rc.Rental!.IsDeleted);
 
             //get all cascade fk's and turn them to restrict
             var cascade_fk = builder.Model.GetEntityTypes()
