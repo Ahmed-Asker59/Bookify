@@ -17,6 +17,22 @@ namespace Bookify.Web.Controllers
             _mapper = mapper;
         }
 
+        public IActionResult Details(int id)
+        {
+            var rental = _context.Rentals
+                .Include(r => r.RentalCopies)
+                .ThenInclude(rc => rc.BookCopy)
+                .ThenInclude(bc => bc!.Book)
+                .SingleOrDefault(r => r.Id == id);
+
+            if (rental is null)
+                return NotFound();
+
+            var viewModel = _mapper.Map<RentalViewModel>(rental);
+
+            return View(viewModel);
+        }
+
         public IActionResult Create(string sKey)
 		{
             int subscriberId = int.Parse(_dataProtector.Unprotect(sKey));
@@ -41,6 +57,8 @@ namespace Bookify.Web.Controllers
 
 			return View(viewModel);
 		}
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -105,7 +123,7 @@ namespace Bookify.Web.Controllers
 
             subscriber.Rentals.Add(rental);
             _context.SaveChanges();
-            return Ok();
+            return RedirectToAction(nameof(Details), new {id = rental.Id});
 
         }
 
@@ -142,7 +160,7 @@ namespace Bookify.Web.Controllers
         {
             var rental = _context.Rentals.Find(id);
 
-            if(rental is null || rental.CreatedOn != DateTime.Today) return NotFound();
+            if(rental is null || rental.CreatedOn.Date != DateTime.Today) return NotFound();
 
             rental.IsDeleted = true;
             rental.LastUpdatedOn = DateTime.Today;
