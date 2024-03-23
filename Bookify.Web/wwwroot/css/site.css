@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.form-floating > .form-select {
+    padding-bottom: .225rem;
+}
+
+.h-70px{
+    height: 70px;
+}
+
+#Books_processing{
+    float: right;
+    width: 650px;
+}
