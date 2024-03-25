@@ -38,3 +38,7 @@
  -Block subscriper
  -Subscriper Profile
  -Subscriber rental history
+
+ * Rental Module</br>
+ -Add, Edit, cancel Rental
+ 
