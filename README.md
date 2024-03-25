@@ -29,15 +29,15 @@
 * Book Module</br>
  -Add, Edit, Search book</br>
  -Allow/ disallow rentals</br>
- -Add, update copy.
- -Copy rental history
+ -Add, update copy.</br>
+ -Copy rental history</br>
 
  * Subscriber Module</br>
  -Add, Edit, Search Subscriber
- -Send welcome mail
- -Block subscriper
- -Subscriper Profile
- -Subscriber rental history
+ -Send welcome mail</br>
+ -Block subscriber</br>
+ -Subscriber Profile</br>
+ -Subscriber rental history</br>
 
  * Rental Module</br>
  -Add, cancel Rental
