@@ -40,5 +40,5 @@
  -Subscriber rental history
 
  * Rental Module</br>
- -Add, Edit, cancel Rental
+ -Add, cancel Rental
  
