@@ -33,7 +33,7 @@
  -Copy rental history</br>
 
  * Subscriber Module</br>
- -Add, Edit, Search Subscriber
+ -Add, Edit, Search Subscriber</br>
  -Send welcome mail</br>
  -Block subscriber</br>
  -Subscriber Profile</br>
