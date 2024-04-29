@@ -21,5 +21,11 @@
 * Full Account mangemnt</br>
 * Full User mangemnt</br>
 
+## Technologies
+* ASP.NET Core MVC</br>
+* Entity Framework Core</br> 
+* CSS/Bootstrap/JQuery</br>
+
+
 
  
