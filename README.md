@@ -12,7 +12,7 @@
 
 </p>
 
-## Project Components and Features
+## Features
 * Dashboard && Reporting</br>
 * Searching && Pagination</br> 
 * Renting</br>
