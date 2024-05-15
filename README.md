@@ -14,7 +14,7 @@
 
 ## Features
 * Dashboard && Reporting</br>
-* Searching && Pagination</br> 
+* Searching && Pagination && Filtering</br> 
 * Renting</br>
 * Subscription</br>
 * Sending Emails and WhatsApp messageas using background jobs</br>
